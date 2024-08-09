@@ -12,7 +12,7 @@ class ProjectController extends Controller
     {
         // $projects = Project::with('type', 'technologies')->get();
 
-        $projects = Project::paginate(12);
+        $projects = Project::with('type')->paginate(12);
         return response()->json([
             'success' => true,
             'results' => $projects,
@@ -30,4 +30,21 @@ class ProjectController extends Controller
     //     $project->load('type', 'technologies');
     //     return response()->json($project);
     // }
+
+    public function show(string $slug)
+    {
+        $project = Project::where('slug', $slug)->with('type', 'technologies')->first();
+
+        if ($project) {
+            return response()->json([
+                'success' => true,
+                'results' => $project,
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'results' => null,
+            ], 404);
+        }
+    }
 }
